@@ -21,7 +21,7 @@ public class MemoryConfiguration implements Configuration {
             defaults = new LinkedHashMap<>();
         }
 
-        if(value instanceof Serializable) {
+        if (value instanceof Serializable) {
             value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
         }
 
@@ -79,7 +79,7 @@ public class MemoryConfiguration implements Configuration {
             return;
         }
 
-        if(value instanceof Serializable) {
+        if (value instanceof Serializable) {
             value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
         }
 

@@ -12,5 +12,5 @@ public interface Serializable {
 
     default void deserialize(@NotNull Map<String, Object> serialized) {
     }
-    
+
 }
