@@ -18,6 +18,7 @@
         <module>bukkit-bootstrap</module>
         <module>standalone-bootstrap</module>
         <module>bungee-bootstrap</module>
+        <module>bootstrap</module>
     </modules>
 
     <properties>
