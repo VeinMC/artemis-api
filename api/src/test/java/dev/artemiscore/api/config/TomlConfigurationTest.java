@@ -45,7 +45,7 @@ public class TomlConfigurationTest {
         tomlConfiguration.set("double", 2.71828);
         tomlConfiguration.set("boolean", true);
         tomlConfiguration.set("long", 1234567890123L);
-        tomlConfiguration.set("list", List.of("one", "two", "three"));
+        tomlConfiguration.set("stringList", List.of("one", "two", "three"));
         tomlConfiguration.set("intList", List.of(1, 2, 3));
         tomlConfiguration.set("mixedList", List.of("a", 1, true));
         tomlConfiguration.set("map", Map.of(

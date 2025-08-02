@@ -47,7 +47,7 @@ public class JsonConfigurationTest {
         jsonConfiguration.set("double", 2.71828);
         jsonConfiguration.set("boolean", true);
         jsonConfiguration.set("long", 1234567890123L);
-        jsonConfiguration.set("list", List.of("one", "two", "three"));
+        jsonConfiguration.set("stringList", List.of("one", "two", "three"));
         jsonConfiguration.set("intList", List.of(1, 2, 3));
         jsonConfiguration.set("mixedList", List.of("a", 1, true));
         jsonConfiguration.set("map", Map.of(

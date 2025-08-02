@@ -47,7 +47,7 @@ public class YamlConfigurationTest {
         yamlConfiguration.set("double", 2.71828);
         yamlConfiguration.set("boolean", true);
         yamlConfiguration.set("long", 1234567890123L);
-        yamlConfiguration.set("list", List.of("one", "two", "three"));
+        yamlConfiguration.set("stringList", List.of("one", "two", "three"));
         yamlConfiguration.set("intList", List.of(1, 2, 3));
         yamlConfiguration.set("mixedList", List.of("a", 1, true));
         yamlConfiguration.set("map", Map.of(
