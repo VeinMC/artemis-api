@@ -5,17 +5,16 @@ import org.junit.Test;
 import java.io.File;
 
 public class YamlConfigurationTest {
-
     private YamlConfiguration configuration;
-    private File testFile = new File("test.yml");
+    private final File testFile = new File("test.yml");
 
     @org.junit.Before
-    public void setUp() throws Exception {
+    public void setUp() {
         configuration = new YamlConfiguration();
     }
 
     @org.junit.After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         configuration = null;
     }
 
@@ -26,8 +25,9 @@ public class YamlConfigurationTest {
             configuration.load(testFile);
             assert configuration.getContents() != null : "Contents should not be null after loading";
             System.out.println(configuration.contents);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            //noinspection CallToPrintStackTrace
+            exception.printStackTrace();
             assert false : "Loading from file should not throw an exception";
         }
     }
@@ -47,5 +47,4 @@ public class YamlConfigurationTest {
 
         configuration.save(testFile);
     }
-
 }

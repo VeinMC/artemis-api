@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MemoryConfiguration implements Configuration {
-
     public static final String REGEX_SEPARATOR = "\\.";
     public static final String SEPARATOR = ".";
     protected Map<String, Object> defaults;

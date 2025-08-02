@@ -4,13 +4,13 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class JsonConfigurationTest {
-    private JsonConfiguration configuration;
-    private final File testFile = new File("test.json");
+public class TomlConfigurationTest {
+    private TomlConfiguration configuration;
+    private final File testFile = new File("test.toml");
 
     @org.junit.Before
     public void setUp() {
-        configuration = new JsonConfiguration();
+        configuration = new TomlConfiguration();
     }
 
     @org.junit.After
@@ -20,11 +20,10 @@ public class JsonConfigurationTest {
 
     @Test
     public void loadFromFile() {
-        // Test loading from a file
         try {
             configuration.load(testFile);
             assert configuration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(configuration.contents);
+            System.out.println(configuration.getContents());
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();
@@ -34,10 +33,9 @@ public class JsonConfigurationTest {
 
     @Test
     public void dump() {
-        // Test the dump method
         String dumpedContent = configuration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
-        assert dumpedContent.equalsIgnoreCase("{}") : "Dumped content should be empty for a new configuration";
+        assert dumpedContent.isEmpty() : "Dumped content should be empty for a new configuration";
 
         configuration.set("test.key", "testValue");
 

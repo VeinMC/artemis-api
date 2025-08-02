@@ -7,7 +7,6 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 
 public class YamlConfiguration extends FileConfiguration {
-
     private static final DumperOptions DUMPER_OPTIONS = new DumperOptions();
 
     static {
@@ -37,7 +36,7 @@ public class YamlConfiguration extends FileConfiguration {
     @Override
     public void load(@NotNull File file) throws IllegalArgumentException, IOException {
         if (!file.exists() || !file.canRead()) {
-            throw new IllegalArgumentException("File does not exist or is not readable: " + file.getAbsolutePath());
+            throw new IllegalArgumentException("File does not exist or is not readable: %s".formatted(file.getAbsolutePath()));
         }
         try (InputStream inputStream = new FileInputStream(file)) {
             load(inputStream);
@@ -60,8 +59,8 @@ public class YamlConfiguration extends FileConfiguration {
         }
         try (Writer writer = new FileWriter(file)) {
             yaml.dump(contents, writer);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save configuration to file: " + file.getAbsolutePath(), e);
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to save configuration to file: %s".formatted(file.getAbsolutePath()), exception);
         }
     }
 
@@ -73,8 +72,8 @@ public class YamlConfiguration extends FileConfiguration {
         try (StringWriter writer = new StringWriter()) {
             yaml.dump(contents, writer);
             return writer.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to dump configuration content.", e);
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to dump configuration content.", exception);
         }
     }
 }

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class FileConfiguration extends MemoryConfiguration {
-
     /**
      * Loads a configuration from the given InputStream.
      *
@@ -32,7 +31,6 @@ public abstract class FileConfiguration extends MemoryConfiguration {
      */
     abstract void load(@NotNull File file) throws IllegalArgumentException, IOException;
 
-
     /**
      * Saves the current configuration to the specified file path.
      *
@@ -51,5 +49,4 @@ public abstract class FileConfiguration extends MemoryConfiguration {
      * @return dumps the configuration as a String.
      */
     abstract String dump();
-
 }

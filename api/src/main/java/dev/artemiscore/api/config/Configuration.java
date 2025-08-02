@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface Configuration {
-
     /**
      * Adds a default value to the configuration.
      *

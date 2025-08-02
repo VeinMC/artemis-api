@@ -30,7 +30,6 @@ public class JsonConfiguration extends FileConfiguration {
                 throw new IOException("Invalid JSON format: Expected a JSON object.");
             }
         }
-
     }
 
     @Override
@@ -47,7 +46,7 @@ public class JsonConfiguration extends FileConfiguration {
     @Override
     public void load(@NotNull File file) throws IllegalArgumentException, IOException {
         if (!file.exists() || !file.canRead()) {
-            throw new IllegalArgumentException("File does not exist or is not readable: " + file.getAbsolutePath());
+            throw new IllegalArgumentException("File does not exist or is not readable: %s".formatted(file.getAbsolutePath()));
         }
         try (InputStream inputStream = new FileInputStream(file)) {
             load(inputStream);
@@ -72,8 +71,8 @@ public class JsonConfiguration extends FileConfiguration {
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             gson.toJson(contents, writer);
             this.file = file; // Store the file reference for future saves
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save JSON configuration to file: " + file.getAbsolutePath(), e);
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to save JSON configuration to file: %s".formatted(file.getAbsolutePath()), exception);
         }
 
     }

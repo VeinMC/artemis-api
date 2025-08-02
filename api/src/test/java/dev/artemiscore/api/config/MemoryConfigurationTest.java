@@ -11,12 +11,12 @@ public class MemoryConfigurationTest {
     private MemoryConfiguration configuration;
 
     @org.junit.Before
-    public void setUp() throws Exception {
+    public void setUp() {
         configuration = new MemoryConfiguration();
     }
 
     @org.junit.After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         configuration = null;
     }
 
@@ -83,13 +83,12 @@ public class MemoryConfigurationTest {
         assert configuration.contains("test.serializable") : "Key should be present after setting serializable object";
 
         TestSerializable deserialized = new TestSerializable();
-        //noinspection DataFlowIssue
+        //noinspection DataFlowIssue,unchecked
         deserialized.deserialize((Map<String, Object>) configuration.get("test.serializable"));
         assert deserialized.id == 42 : "Deserialized id should match the original";
     }
 
     static class TestSerializable implements Serializable {
-
         private int id;
 
         @Override
@@ -106,5 +105,4 @@ public class MemoryConfigurationTest {
             }
         }
     }
-
 }
