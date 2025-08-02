@@ -7,25 +7,25 @@ import java.util.List;
 import java.util.Map;
 
 public class TomlConfigurationTest {
-    private TomlConfiguration configuration;
+    private TomlConfiguration tomlConfiguration;
     private final File testFile = new File("test.toml");
 
     @org.junit.Before
     public void setUp() {
-        configuration = new TomlConfiguration();
+        tomlConfiguration = new TomlConfiguration();
     }
 
     @org.junit.After
     public void tearDown() {
-        configuration = null;
+        tomlConfiguration = null;
     }
 
     @Test
     public void loadFromFile() {
         try {
-            configuration.load(testFile);
-            assert configuration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(configuration.getContents());
+            tomlConfiguration.load(testFile);
+            assert tomlConfiguration.getContents() != null : "Contents should not be null after loading";
+            System.out.println(tomlConfiguration.getContents());
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();
@@ -35,28 +35,28 @@ public class TomlConfigurationTest {
 
     @Test
     public void dump() {
-        String dumpedContent = configuration.dump();
+        String dumpedContent = tomlConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
         assert dumpedContent.isEmpty() : "Dumped content should be empty for a new configuration";
 
-        configuration.set("string", "Hello World");
-        configuration.set("int", 42);
-        configuration.set("float", 3.14f);
-        configuration.set("double", 2.71828);
-        configuration.set("boolean", true);
-        configuration.set("long", 1234567890123L);
-        configuration.set("list", List.of("one", "two", "three"));
-        configuration.set("intList", List.of(1, 2, 3));
-        configuration.set("mixedList", List.of("a", 1, true));
-        configuration.set("map", Map.of(
+        tomlConfiguration.set("string", "Hello World");
+        tomlConfiguration.set("int", 42);
+        tomlConfiguration.set("float", 3.14f);
+        tomlConfiguration.set("double", 2.71828);
+        tomlConfiguration.set("boolean", true);
+        tomlConfiguration.set("long", 1234567890123L);
+        tomlConfiguration.set("list", List.of("one", "two", "three"));
+        tomlConfiguration.set("intList", List.of(1, 2, 3));
+        tomlConfiguration.set("mixedList", List.of("a", 1, true));
+        tomlConfiguration.set("map", Map.of(
                 "string", "value",
                 "int", 99
         ));
 
-        dumpedContent = configuration.dump();
+        dumpedContent = tomlConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null after setting a value";
         System.out.println(dumpedContent);
 
-        configuration.save(testFile);
+        tomlConfiguration.save(testFile);
     }
 }

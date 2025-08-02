@@ -7,26 +7,26 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonConfigurationTest {
-    private JsonConfiguration configuration;
+    private JsonConfiguration jsonConfiguration;
     private final File testFile = new File("test.json");
 
     @org.junit.Before
     public void setUp() {
-        configuration = new JsonConfiguration();
+        jsonConfiguration = new JsonConfiguration();
     }
 
     @org.junit.After
     public void tearDown() {
-        configuration = null;
+        jsonConfiguration = null;
     }
 
     @Test
     public void loadFromFile() {
         // Test loading from a file
         try {
-            configuration.load(testFile);
-            assert configuration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(configuration.contents);
+            jsonConfiguration.load(testFile);
+            assert jsonConfiguration.getContents() != null : "Contents should not be null after loading";
+            System.out.println(jsonConfiguration.contents);
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();
@@ -37,28 +37,28 @@ public class JsonConfigurationTest {
     @Test
     public void dump() {
         // Test the dump method
-        String dumpedContent = configuration.dump();
+        String dumpedContent = jsonConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
         assert dumpedContent.equalsIgnoreCase("{}") : "Dumped content should be empty for a new configuration";
 
-        configuration.set("string", "Hello World");
-        configuration.set("int", 42);
-        configuration.set("float", 3.14f);
-        configuration.set("double", 2.71828);
-        configuration.set("boolean", true);
-        configuration.set("long", 1234567890123L);
-        configuration.set("list", List.of("one", "two", "three"));
-        configuration.set("intList", List.of(1, 2, 3));
-        configuration.set("mixedList", List.of("a", 1, true));
-        configuration.set("map", Map.of(
+        jsonConfiguration.set("string", "Hello World");
+        jsonConfiguration.set("int", 42);
+        jsonConfiguration.set("float", 3.14f);
+        jsonConfiguration.set("double", 2.71828);
+        jsonConfiguration.set("boolean", true);
+        jsonConfiguration.set("long", 1234567890123L);
+        jsonConfiguration.set("list", List.of("one", "two", "three"));
+        jsonConfiguration.set("intList", List.of(1, 2, 3));
+        jsonConfiguration.set("mixedList", List.of("a", 1, true));
+        jsonConfiguration.set("map", Map.of(
                 "string", "value",
                 "int", 99
         ));
 
-        dumpedContent = configuration.dump();
+        dumpedContent = jsonConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null after setting a value";
         System.out.println(dumpedContent);
 
-        configuration.save(testFile);
+        jsonConfiguration.save(testFile);
     }
 }
