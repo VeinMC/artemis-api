@@ -7,8 +7,7 @@ import org.tomlj.TomlTable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TomlConfiguration extends FileConfiguration {
     private File file;
@@ -21,8 +20,12 @@ public class TomlConfiguration extends FileConfiguration {
 
     @Override
     public void load(@NotNull String content) {
-        TomlParseResult tomlParseResult = Toml.parse(content);
+        if (content.trim().isEmpty()) {
+            contents = new LinkedHashMap<>();
+            return;
+        }
 
+        TomlParseResult tomlParseResult = Toml.parse(content);
         if (tomlParseResult.hasErrors()) {
             throw new IllegalArgumentException("Invalid TOML content: %s".formatted(tomlParseResult.errors()));
         }
@@ -87,15 +90,18 @@ public class TomlConfiguration extends FileConfiguration {
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     private void dumpTomlMap(Map<String, Object> map, String prefix, StringBuilder builder) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Map<?, ?> nested) {
+            if (value == null) continue;
+
+            if (value instanceof Map<?, ?> nestedMap) {
                 builder.append("[").append(prefix).append(key).append("]\n");
-                //noinspection unchecked
-                dumpTomlMap((Map<String, Object>) nested, "%s%s.".formatted(prefix, key), builder);
+                dumpTomlMap((Map<String, Object>) nestedMap, "%s%s.".formatted(prefix, key), builder);
+                builder.append("\n");
             } else {
                 builder.append(key).append(" = ").append(formatTomlValue(value)).append("\n");
             }
@@ -103,9 +109,19 @@ public class TomlConfiguration extends FileConfiguration {
     }
 
     private String formatTomlValue(Object value) {
-        if (value instanceof String) {
-            return "\"" + value.toString().replace("\"", "\\\"") + "\"";
+        if (value instanceof String str) {
+            return "\"" + str.replace("\"", "\\\"") + "\"";
+        } else if (value instanceof Iterable<?> iterable) {
+            StringBuilder builder = new StringBuilder("[");
+            for (Object item : iterable) {
+                builder.append(formatTomlValue(item)).append(", ");
+            }
+            if (builder.length() > 1) builder.setLength(builder.length() - 2); // remove trailing comma
+            return builder.append("]").toString();
+        } else if (value instanceof Object[] array) {
+            return formatTomlValue(Arrays.asList(array)); // Convert array to list
+        } else {
+            return value.toString();
         }
-        return value.toString();
     }
 }
