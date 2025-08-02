@@ -12,21 +12,21 @@ public class JsonConfigurationTest {
 
     @org.junit.Before
     public void setUp() {
-        jsonConfiguration = new JsonConfiguration();
+        this.jsonConfiguration = new JsonConfiguration();
     }
 
     @org.junit.After
     public void tearDown() {
-        jsonConfiguration = null;
+        this.jsonConfiguration = null;
     }
 
     @Test
     public void loadFromFile() {
         // Test loading from a file
         try {
-            jsonConfiguration.load(testFile);
+            this.jsonConfiguration.load(this.testFile);
             assert jsonConfiguration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(jsonConfiguration.contents);
+            System.out.println(this.jsonConfiguration.contents);
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();
@@ -37,28 +37,28 @@ public class JsonConfigurationTest {
     @Test
     public void dump() {
         // Test the dump method
-        String dumpedContent = jsonConfiguration.dump();
+        String dumpedContent = this.jsonConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
         assert dumpedContent.equalsIgnoreCase("{}") : "Dumped content should be empty for a new configuration";
 
-        jsonConfiguration.set("string", "Hello World");
-        jsonConfiguration.set("int", 42);
-        jsonConfiguration.set("float", 3.14f);
-        jsonConfiguration.set("double", 2.71828);
-        jsonConfiguration.set("boolean", true);
-        jsonConfiguration.set("long", 1234567890123L);
-        jsonConfiguration.set("stringList", List.of("one", "two", "three"));
-        jsonConfiguration.set("intList", List.of(1, 2, 3));
-        jsonConfiguration.set("mixedList", List.of("a", 1, true));
-        jsonConfiguration.set("map", Map.of(
+        this.jsonConfiguration.set("string", "Hello World");
+        this.jsonConfiguration.set("int", 42);
+        this.jsonConfiguration.set("float", 3.14f);
+        this.jsonConfiguration.set("double", 2.71828);
+        this.jsonConfiguration.set("boolean", true);
+        this.jsonConfiguration.set("long", 1234567890123L);
+        this.jsonConfiguration.set("stringList", List.of("one", "two", "three"));
+        this.jsonConfiguration.set("intList", List.of(1, 2, 3));
+        this.jsonConfiguration.set("mixedList", List.of("a", 1, true));
+        this.jsonConfiguration.set("map", Map.of(
                 "string", "value",
                 "int", 99
         ));
 
-        dumpedContent = jsonConfiguration.dump();
+        dumpedContent = this.jsonConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null after setting a value";
         System.out.println(dumpedContent);
 
-        jsonConfiguration.save(testFile);
+        this.jsonConfiguration.save(this.testFile);
     }
 }
