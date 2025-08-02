@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class JsonConfiguration extends FileConfiguration {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new Gson().newBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private File file;
 
     @Override
@@ -78,7 +78,7 @@ public class JsonConfiguration extends FileConfiguration {
     }
 
     @Override
-    String dump() {
+    public String dump() {
         if (contents == null || contents.isEmpty()) {
             return "{}"; // Return an empty JSON object if contents are null or empty
         }

@@ -67,7 +67,7 @@ public class TomlConfiguration extends FileConfiguration {
     }
 
     @Override
-    String dump() {
+    public String dump() {
         if (contents == null || contents.isEmpty()) {
             return "";
         }
