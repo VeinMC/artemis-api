@@ -24,7 +24,7 @@ public class XmlConfiguration extends FileConfiguration {
     public void load(@NotNull String content) {
         try {
             try (InputStream inputStream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-                load(inputStream);
+                this.load(inputStream);
             }
         } catch (IOException exception) {
             throw new IllegalArgumentException("Invalid XML content", exception);
@@ -33,7 +33,7 @@ public class XmlConfiguration extends FileConfiguration {
 
     @Override
     public void load(@NotNull File file) throws IOException {
-        if (!file.exists() || !file.canRead()) throw new IllegalArgumentException("File does not exist or is not readable: " + file.getAbsolutePath());
+        if (!file.exists() || !file.canRead()) throw new IllegalArgumentException("File does not exist or is not readable: %s".formatted(file.getAbsolutePath()));
         this.file = file;
         try (InputStream inputStream = new FileInputStream(file)) {
             this.load(inputStream);

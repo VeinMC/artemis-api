@@ -24,10 +24,8 @@ public class TomlConfiguration extends FileConfiguration {
             this.contents = new LinkedHashMap<>();
             return;
         }
-
         TomlParseResult tomlParseResult = Toml.parse(content);
         if (tomlParseResult.hasErrors()) throw new IllegalArgumentException("Invalid TOML content: %s".formatted(tomlParseResult.errors()));
-
         this.contents = convertTomlTable(tomlParseResult);
     }
 

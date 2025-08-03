@@ -1,7 +1,6 @@
 package dev.artemiscore.api.config.file.env;
 
 import dev.artemiscore.api.config.file.FileConfiguration;
-import dev.artemiscore.api.config.file.env.interfaces.Env;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class EnvConfiguration extends FileConfiguration implements Env {
+public class EnvConfiguration extends FileConfiguration {
     private final Map<String, String> env = System.getenv();
     private final Properties properties = System.getProperties();
 
@@ -27,19 +26,16 @@ public class EnvConfiguration extends FileConfiguration implements Env {
     public void load(@NotNull InputStream inputStream) throws IOException {
     }
 
-    @Override
     public void loadEnvOnly() {
         if (this.contents == null) this.contents = new HashMap<>();
         this.contents.putAll(this.env);
     }
 
-    @Override
     public void loadSystemPropertiesOnly() {
         if (this.contents == null) this.contents = new HashMap<>();
         this.properties.stringPropertyNames().forEach(f -> this.contents.put(f, this.properties.getProperty(f)));
     }
 
-    @Override
     public void loadAll() {
         this.loadEnvOnly();
         this.loadSystemPropertiesOnly();
