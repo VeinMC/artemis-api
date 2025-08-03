@@ -1,5 +1,6 @@
 package dev.artemiscore.api.config;
 
+import dev.artemiscore.api.config.file.yaml.YamlConfiguration;
 import org.junit.Test;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class YamlConfigurationTest {
         try {
             this.yamlConfiguration.load(this.testFile);
             assert this.yamlConfiguration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(this.yamlConfiguration.contents);
+            System.out.println(this.yamlConfiguration.getContents());
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();

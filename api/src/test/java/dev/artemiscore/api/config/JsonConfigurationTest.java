@@ -1,5 +1,6 @@
 package dev.artemiscore.api.config;
 
+import dev.artemiscore.api.config.file.json.JsonConfiguration;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,8 +26,8 @@ public class JsonConfigurationTest {
         // Test loading from a file
         try {
             this.jsonConfiguration.load(this.testFile);
-            assert jsonConfiguration.getContents() != null : "Contents should not be null after loading";
-            System.out.println(this.jsonConfiguration.contents);
+            assert this.jsonConfiguration.getContents() != null : "Contents should not be null after loading";
+            System.out.println(this.jsonConfiguration.getContents());
         } catch (Exception exception) {
             //noinspection CallToPrintStackTrace
             exception.printStackTrace();

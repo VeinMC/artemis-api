@@ -1,5 +1,6 @@
-package dev.artemiscore.api.config;
+package dev.artemiscore.api.config.file.toml;
 
+import dev.artemiscore.api.config.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
@@ -14,50 +15,40 @@ public class TomlConfiguration extends FileConfiguration {
 
     @Override
     public void load(@NotNull InputStream inputStream) throws IOException {
-        String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        load(content);
+        this.load(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
     }
 
     @Override
     public void load(@NotNull String content) {
         if (content.trim().isEmpty()) {
-            contents = new LinkedHashMap<>();
+            this.contents = new LinkedHashMap<>();
             return;
         }
 
         TomlParseResult tomlParseResult = Toml.parse(content);
-        if (tomlParseResult.hasErrors()) {
-            throw new IllegalArgumentException("Invalid TOML content: %s".formatted(tomlParseResult.errors()));
-        }
+        if (tomlParseResult.hasErrors()) throw new IllegalArgumentException("Invalid TOML content: %s".formatted(tomlParseResult.errors()));
 
-        contents = convertTomlTable(tomlParseResult);
+        this.contents = convertTomlTable(tomlParseResult);
     }
 
     @Override
     public void load(@NotNull File file) throws IllegalArgumentException, IOException {
-        if (!file.exists() || !file.canRead()) {
-            throw new IllegalArgumentException("File does not exist or is not readable: %s".formatted(file.getAbsolutePath()));
-        }
+        if (!file.exists() || !file.canRead()) throw new IllegalArgumentException("File does not exist or is not readable: %s".formatted(file.getAbsolutePath()));
         try (InputStream inputStream = new FileInputStream(file)) {
-            load(inputStream);
+            this.load(inputStream);
             this.file = file;
         }
     }
 
     @Override
     public void save() {
-        if (file == null) {
-            throw new IllegalStateException("Configuration is not associated with a file.");
-        }
-        save(file);
+        if (this.file == null) throw new IllegalStateException("Configuration is not associated with a file.");
+        this.save(this.file);
     }
 
     @Override
     public void save(@NotNull File file) {
-        if (contents == null || contents.isEmpty()) {
-            throw new IllegalStateException("No content to save.");
-        }
-
+        if (this.contents == null || this.contents.isEmpty()) throw new IllegalStateException("No content to save.");
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             writer.write(dump());
             this.file = file;
@@ -68,12 +59,9 @@ public class TomlConfiguration extends FileConfiguration {
 
     @Override
     public String dump() {
-        if (contents == null || contents.isEmpty()) {
-            return "";
-        }
-
+        if (this.contents == null || this.contents.isEmpty()) return "";
         StringBuilder stringBuilder = new StringBuilder();
-        dumpTomlMap(contents, "", stringBuilder);
+        this.dumpTomlMap(this.contents, "", stringBuilder);
         return stringBuilder.toString();
     }
 
@@ -91,19 +79,17 @@ public class TomlConfiguration extends FileConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    private void dumpTomlMap(Map<String, Object> map, String prefix, StringBuilder builder) {
+    private void dumpTomlMap(Map<String, Object> map, String prefix, StringBuilder stringBuilder) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-
             if (value == null) continue;
-
             if (value instanceof Map<?, ?> nestedMap) {
-                builder.append("[").append(prefix).append(key).append("]\n");
-                dumpTomlMap((Map<String, Object>) nestedMap, "%s%s.".formatted(prefix, key), builder);
-                builder.append("\n");
+                stringBuilder.append("[").append(prefix).append(key).append("]\n");
+                dumpTomlMap((Map<String, Object>) nestedMap, "%s%s.".formatted(prefix, key), stringBuilder);
+                stringBuilder.append("\n");
             } else {
-                builder.append(key).append(" = ").append(formatTomlValue(value)).append("\n");
+                stringBuilder.append(key).append(" = ").append(formatTomlValue(value)).append("\n");
             }
         }
     }
@@ -112,12 +98,10 @@ public class TomlConfiguration extends FileConfiguration {
         if (value instanceof String str) {
             return "\"" + str.replace("\"", "\\\"") + "\"";
         } else if (value instanceof Iterable<?> iterable) {
-            StringBuilder builder = new StringBuilder("[");
-            for (Object item : iterable) {
-                builder.append(formatTomlValue(item)).append(", ");
-            }
-            if (builder.length() > 1) builder.setLength(builder.length() - 2); // remove trailing comma
-            return builder.append("]").toString();
+            StringBuilder stringBuilder = new StringBuilder("[");
+            iterable.forEach(f -> stringBuilder.append(formatTomlValue(f)).append(", "));
+            if (stringBuilder.length() > 1) stringBuilder.setLength(stringBuilder.length() - 2); // remove trailing comma
+            return stringBuilder.append("]").toString();
         } else if (value instanceof Object[] array) {
             return formatTomlValue(Arrays.asList(array)); // Convert array to list
         } else {

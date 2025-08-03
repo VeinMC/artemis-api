@@ -1,5 +1,7 @@
-package dev.artemiscore.api.config;
+package dev.artemiscore.api.config.memory;
 
+import dev.artemiscore.api.config.Configuration;
+import dev.artemiscore.api.config.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,8 +22,8 @@ public class MemoryConfiguration implements Configuration {
             defaults = new LinkedHashMap<>();
         }
 
-        if (value instanceof Serializable) {
-            value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
+        if (value instanceof ConfigurationSerializable) {
+            value = ((ConfigurationSerializable) value).serialize(); // Serialize if the value is Serializable
         }
 
         defaults.put(key, value);
@@ -78,8 +80,8 @@ public class MemoryConfiguration implements Configuration {
             return;
         }
 
-        if (value instanceof Serializable) {
-            value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
+        if (value instanceof ConfigurationSerializable) {
+            value = ((ConfigurationSerializable) value).serialize(); // Serialize if the value is Serializable
         }
 
         parent.put(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase(), value); // Set the final value

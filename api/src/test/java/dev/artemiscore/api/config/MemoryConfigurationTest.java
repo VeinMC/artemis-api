@@ -1,5 +1,6 @@
 package dev.artemiscore.api.config;
 
+import dev.artemiscore.api.config.memory.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -12,21 +13,21 @@ public class MemoryConfigurationTest {
 
     @org.junit.Before
     public void setUp() {
-        configuration = new MemoryConfiguration();
+        this.configuration = new MemoryConfiguration();
     }
 
     @org.junit.After
     public void tearDown() {
-        configuration = null;
+        this.configuration = null;
     }
 
     @Test
     public void addDefault() {
-        configuration.addDefault("test.key", "defaultValue");
+        this.configuration.addDefault("test.key", "defaultValue");
 
-        assert configuration.getDefaults().containsKey("test.key") : "Default key should be present";
+        assert this.configuration.getDefaults().containsKey("test.key") : "Default key should be present";
 
-        assert "defaultValue".equals(configuration.getDefaults().get("test.key")) : "Default value should match";
+        assert "defaultValue".equals(this.configuration.getDefaults().get("test.key")) : "Default value should match";
     }
 
     @Test
@@ -35,60 +36,60 @@ public class MemoryConfigurationTest {
         defaults.put("test.key1", "defaultValue1");
         defaults.put("test.key2", "defaultValue2");
 
-        configuration.addDefaults(defaults);
+        this.configuration.addDefaults(defaults);
 
-        assert configuration.getDefaults().containsKey("test.key1") : "Default key1 should be present";
-        assert "defaultValue1".equals(configuration.getDefaults().get("test.key1")) : "Default value1 should match";
+        assert this.configuration.getDefaults().containsKey("test.key1") : "Default key1 should be present";
+        assert "defaultValue1".equals(this.configuration.getDefaults().get("test.key1")) : "Default value1 should match";
 
-        assert configuration.getDefaults().containsKey("test.key2") : "Default key2 should be present";
-        assert "defaultValue2".equals(configuration.getDefaults().get("test.key2")) : "Default value2 should match";
+        assert this.configuration.getDefaults().containsKey("test.key2") : "Default key2 should be present";
+        assert "defaultValue2".equals(this.configuration.getDefaults().get("test.key2")) : "Default value2 should match";
     }
 
     @Test
     public void saveDefaults() {
-        configuration.addDefault("test.key", "defaultValue");
-        configuration.addDefault("test.existingKey", "existingValue");
-        configuration.set("test.existingKey", "existingValue2");
-        System.out.println("before saving: " + configuration.getContents());
-        configuration.saveDefaults();
-        System.out.println("after saving: " + configuration.getContents());
-        assert configuration.contains("test.key") : "Key should be present after saving defaults";
-        assert configuration.contains("test.existingKey") : "Existing key should still be present after saving defaults";
-        assert Objects.equals(configuration.get("test.existingKey"), "existingValue2") : "Existing key should retain its value after saving defaults";
+        this.configuration.addDefault("test.key", "defaultValue");
+        this.configuration.addDefault("test.existingKey", "existingValue");
+        this.configuration.set("test.existingKey", "existingValue2");
+        System.out.printf("before saving: %s%n", this.configuration.getContents());
+        this.configuration.saveDefaults();
+        System.out.printf("after saving: %s%n", this.configuration.getContents());
+        assert this.configuration.contains("test.key") : "Key should be present after saving defaults";
+        assert this.configuration.contains("test.existingKey") : "Existing key should still be present after saving defaults";
+        assert Objects.equals(this.configuration.get("test.existingKey"), "existingValue2") : "Existing key should retain its value after saving defaults";
     }
 
     @Test
     public void remove() {
-        configuration.set("test.existingKey", "existingValue2");
-        System.out.println("Contents before removing: " + configuration.getContents());
-        configuration.remove("test.existingKey");
-        System.out.println("Contents after removing: " + configuration.getContents());
-        assert !configuration.contains("test.existingKey") : "Key should not be present after removal";
+        this.configuration.set("test.existingKey", "existingValue2");
+        System.out.printf("Contents before removing: %s%n", this.configuration.getContents());
+        this.configuration.remove("test.existingKey");
+        System.out.printf("Contents after removing: %s%n", this.configuration.getContents());
+        assert !this.configuration.contains("test.existingKey") : "Key should not be present after removal";
     }
 
     @Test
     public void set() {
-        configuration.set("test.key", "value");
-        System.out.println("Contents after setting: " + configuration.getContents());
-        assert configuration.contains("test.key") : "Key should be present after setting value";
+        this.configuration.set("test.key", "value");
+        System.out.printf("Contents after setting: %s%n", this.configuration.getContents());
+        assert this.configuration.contains("test.key") : "Key should be present after setting value";
     }
 
     @Test
     public void serializeAndDeserialize() {
-        TestSerializable testSerializable = new TestSerializable();
+        TestConfigurationSerializable testSerializable = new TestConfigurationSerializable();
         testSerializable.id = 42;
 
-        configuration.set("test.serializable", testSerializable);
+        this.configuration.set("test.serializable", testSerializable);
 
-        assert configuration.contains("test.serializable") : "Key should be present after setting serializable object";
+        assert this.configuration.contains("test.serializable") : "Key should be present after setting serializable object";
 
-        TestSerializable deserialized = new TestSerializable();
+        TestConfigurationSerializable testConfigurationSerializable = new TestConfigurationSerializable();
         //noinspection DataFlowIssue,unchecked
-        deserialized.deserialize((Map<String, Object>) configuration.get("test.serializable"));
-        assert deserialized.id == 42 : "Deserialized id should match the original";
+        testConfigurationSerializable.deserialize((Map<String, Object>) this.configuration.get("test.serializable"));
+        assert testConfigurationSerializable.id == 42 : "Deserialized id should match the original";
     }
 
-    static class TestSerializable implements Serializable {
+    static class TestConfigurationSerializable implements ConfigurationSerializable {
         private int id;
 
         @Override
@@ -100,9 +101,7 @@ public class MemoryConfigurationTest {
 
         @Override
         public void deserialize(@NotNull Map<String, Object> data) {
-            if (data.containsKey("id")) {
-                this.id = (int) data.get("id");
-            }
+            if (data.containsKey("id")) this.id = (int) data.get("id");
         }
     }
 }

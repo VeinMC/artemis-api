@@ -1,5 +1,6 @@
 package dev.artemiscore.api.config;
 
+import dev.artemiscore.api.config.file.toml.TomlConfiguration;
 import org.junit.Test;
 
 import java.io.File;

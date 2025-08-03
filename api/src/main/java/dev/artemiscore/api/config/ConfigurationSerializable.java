@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public interface Serializable {
+public interface ConfigurationSerializable {
     default @NotNull Map<String, Object> serialize() {
         return Map.of();
     }
