@@ -40,7 +40,7 @@ public class XmlConfigurationTest {
     public void dump() {
         String dumpedContent = this.xmlConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
-        assert dumpedContent.contains("<?xml") || dumpedContent.isEmpty() : "Should produce valid or empty XML";
+        assert dumpedContent.isEmpty() || dumpedContent.contains("<?xml") : "Should produce valid or empty XML";
 
         this.xmlConfiguration.set("string", "Hello World");
         this.xmlConfiguration.set("int", 42);

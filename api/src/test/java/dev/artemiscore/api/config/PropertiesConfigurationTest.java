@@ -40,7 +40,7 @@ public class PropertiesConfigurationTest {
     public void dump() {
         String dumpedContent = this.propertiesConfiguration.dump();
         assert dumpedContent != null : "Dumped content should not be null";
-        assert dumpedContent.contains("=") || dumpedContent.isEmpty() : "Dump should contain properties";
+        assert dumpedContent.isEmpty() || dumpedContent.contains("=") : "Dump should contain properties";
 
         this.propertiesConfiguration.set("string", "Hello World");
         this.propertiesConfiguration.set("int", 42);
