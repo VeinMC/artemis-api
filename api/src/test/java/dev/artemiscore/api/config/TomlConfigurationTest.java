@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TomlConfigurationTest {
-    private TomlConfiguration tomlConfiguration;
     private final File testFile = new File("test.toml");
+    private TomlConfiguration tomlConfiguration;
 
     @org.junit.Before
     public void setUp() {
@@ -51,7 +51,8 @@ public class TomlConfigurationTest {
         this.tomlConfiguration.set("mixedList", List.of("a", 1, true));
         this.tomlConfiguration.set("map", Map.of(
                 "string", "value",
-                "int", 99
+                "int", 99,
+                "nestedMap", Map.of("key", "value")
         ));
 
         dumpedContent = this.tomlConfiguration.dump();

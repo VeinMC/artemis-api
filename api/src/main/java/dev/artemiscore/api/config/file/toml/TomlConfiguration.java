@@ -76,7 +76,6 @@ public class TomlConfiguration extends FileConfiguration {
         return map;
     }
 
-    @SuppressWarnings("unchecked")
     private void dumpTomlMap(Map<String, Object> map, String prefix, StringBuilder stringBuilder) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -84,6 +83,7 @@ public class TomlConfiguration extends FileConfiguration {
             if (value == null) continue;
             if (value instanceof Map<?, ?> nestedMap) {
                 stringBuilder.append("[").append(prefix).append(key).append("]\n");
+                //noinspection unchecked
                 dumpTomlMap((Map<String, Object>) nestedMap, "%s%s.".formatted(prefix, key), stringBuilder);
                 stringBuilder.append("\n");
             } else {
@@ -97,8 +97,12 @@ public class TomlConfiguration extends FileConfiguration {
             return "\"" + str.replace("\"", "\\\"") + "\"";
         } else if (value instanceof Iterable<?> iterable) {
             StringBuilder stringBuilder = new StringBuilder("[");
-            iterable.forEach(f -> stringBuilder.append(formatTomlValue(f)).append(", "));
-            if (stringBuilder.length() > 1) stringBuilder.setLength(stringBuilder.length() - 2); // remove trailing comma
+            for (Object f : iterable) {
+                stringBuilder.append(formatTomlValue(f)).append(", ");
+            }
+            if (stringBuilder.length() > 1) {
+                stringBuilder.setLength(stringBuilder.length() - 2); // remove trailing comma
+            }
             return stringBuilder.append("]").toString();
         } else if (value instanceof Object[] array) {
             return formatTomlValue(Arrays.asList(array)); // Convert array to list

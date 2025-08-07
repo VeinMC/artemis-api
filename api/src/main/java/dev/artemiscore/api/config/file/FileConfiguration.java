@@ -1,6 +1,6 @@
 package dev.artemiscore.api.config.file;
 
-import dev.artemiscore.api.config.memory.MemoryConfiguration;
+import dev.artemiscore.api.config.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

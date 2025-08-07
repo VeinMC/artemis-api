@@ -1,6 +1,5 @@
 package dev.artemiscore.api.config;
 
-import dev.artemiscore.api.config.memory.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -76,20 +75,20 @@ public class MemoryConfigurationTest {
 
     @Test
     public void serializeAndDeserialize() {
-        TestConfigurationSerializable testSerializable = new TestConfigurationSerializable();
+        TestSerializable testSerializable = new TestSerializable();
         testSerializable.id = 42;
 
         this.configuration.set("test.serializable", testSerializable);
 
         assert this.configuration.contains("test.serializable") : "Key should be present after setting serializable object";
 
-        TestConfigurationSerializable testConfigurationSerializable = new TestConfigurationSerializable();
+        TestSerializable testConfigurationSerializable = new TestSerializable();
         //noinspection DataFlowIssue,unchecked
         testConfigurationSerializable.deserialize((Map<String, Object>) this.configuration.get("test.serializable"));
         assert testConfigurationSerializable.id == 42 : "Deserialized id should match the original";
     }
 
-    static class TestConfigurationSerializable implements ConfigurationSerializable {
+    static class TestSerializable implements Serializable {
         private int id;
 
         @Override

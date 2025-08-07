@@ -1,7 +1,5 @@
-package dev.artemiscore.api.config.memory;
+package dev.artemiscore.api.config;
 
-import dev.artemiscore.api.config.Configuration;
-import dev.artemiscore.api.config.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +17,9 @@ public class MemoryConfiguration implements Configuration {
     @Override
     public void addDefault(@NotNull String key, @NotNull Object value) {
         if (this.defaults == null) this.defaults = new LinkedHashMap<>();
-
-        if (value instanceof ConfigurationSerializable) value = ((ConfigurationSerializable) value).serialize(); // Serialize if the value is Serializable
-
+        if (value instanceof Serializable) {
+            value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
+        }
         this.defaults.put(key, value);
     }
 
@@ -65,7 +63,9 @@ public class MemoryConfiguration implements Configuration {
 
         if (parent == null) return;
 
-        if (value instanceof ConfigurationSerializable) value = ((ConfigurationSerializable) value).serialize(); // Serialize if the value is Serializable
+        if (value instanceof Serializable) {
+            value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
+        }
 
         parent.put(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase(), value); // Set the final value
     }
