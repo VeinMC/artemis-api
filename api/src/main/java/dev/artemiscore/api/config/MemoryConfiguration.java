@@ -16,67 +16,52 @@ public class MemoryConfiguration implements Configuration {
 
     @Override
     public void addDefault(@NotNull String key, @NotNull Object value) {
-        if (defaults == null) {
-            defaults = new LinkedHashMap<>();
-        }
-
+        if (this.defaults == null) this.defaults = new LinkedHashMap<>();
         if (value instanceof Serializable) {
             value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
         }
-
-        defaults.put(key, value);
+        this.defaults.put(key, value);
     }
 
     @Override
     public void addDefaults(@NotNull Map<String, Object> map) {
-        if (defaults == null) {
-            defaults = new LinkedHashMap<>();
-        }
-        defaults.putAll(map);
+        if (this.defaults == null) this.defaults = new LinkedHashMap<>();
+        this.defaults.putAll(map);
     }
 
     @Override
     public void saveDefaults() {
-        if (defaults == null || defaults.isEmpty()) {
-            return; // No defaults to save
-        }
+        if (this.defaults == null || this.defaults.isEmpty()) return; // No defaults to save
 
-        if (contents == null) {
-            contents = new HashMap<>();
-        }
+        if (this.contents == null) this.contents = new HashMap<>();
 
-        for (Map.Entry<String, Object> entry : defaults.entrySet()) {
-            setIfAbsent(entry.getKey(), entry.getValue());
-        }
+        this.defaults.forEach(this::setIfAbsent);
     }
 
     @Override
     public boolean contains(@NotNull String key) {
-        return get(key) != null;
+        return this.get(key) != null;
     }
 
     @Override
     public @Nullable Object get(@NotNull String key) {
-        if (contents == null || key.isEmpty()) {
-            return null; // No contents loaded
-        }
-        Map<String, Object> parent = getParent(key, false);
-        return parent.get(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase());
+        if (this.contents == null || key.isEmpty()) return null; // No contents loaded
+        return this
+                .getParent(key, false)
+                .get(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase());
     }
 
     @Override
     public Object get(@NotNull String key, @NotNull Object defaultValue) {
-        Object value = get(key);
+        Object value = this.get(key);
         return value != null ? value : defaultValue;
     }
 
     @Override
     public void set(@NotNull String key, @NotNull Object value) {
-        Map<String, Object> parent = getParent(key, true);
+        Map<String, Object> parent = this.getParent(key, true);
 
-        if (parent == null) {
-            return;
-        }
+        if (parent == null) return;
 
         if (value instanceof Serializable) {
             value = ((Serializable) value).serialize(); // Serialize if the value is Serializable
@@ -90,80 +75,49 @@ public class MemoryConfiguration implements Configuration {
         map.forEach(this::set);
     }
 
-    private void setIfAbsent(String key, Object value) {
-        if (key.isEmpty() || contains(key)) return;
-        set(key, value);
+    public void setIfAbsent(String key, Object value) {
+        if (key.isEmpty() || this.contains(key)) return;
+        this.set(key, value);
     }
 
     @Override
     public boolean remove(@NotNull String key) {
-        if (contents == null || key.isEmpty()) {
-            return false; // No contents loaded
-        }
-        Map<String, Object> parent = getParent(key, false);
-        return parent.remove(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase()) != null;
+        if (this.contents == null || key.isEmpty()) return false; // No contents loaded
+        return this
+                .getParent(key, false)
+                .remove(key.substring(key.lastIndexOf(SEPARATOR) + 1).toLowerCase()) != null;
     }
 
     public Map<String, Object> getParent(String key, boolean createIfAbsent) {
         if (key.isEmpty()) return null;
-
-        if (contents == null) {
-            contents = new LinkedHashMap<>();
-        }
-
+        if (this.contents == null) this.contents = new LinkedHashMap<>();
         String[] parts = key.toLowerCase().split(REGEX_SEPARATOR);
-
-        if (parts.length == 0) {
-            return contents;
+        if (parts.length == 0) return this.contents;
+        Map<String, Object> currentMap = contents;
+        for (int index = 0; index < parts.length - 1; index++) {
+            String part = parts[index];
+            Object value = currentMap.get(part);
+            if (value instanceof Map) {
+                //noinspection unchecked
+                currentMap = (Map<String, Object>) value;
+            } else if (createIfAbsent) {
+                Map<String, Object> newMap = new LinkedHashMap<>();
+                currentMap.put(part, newMap);
+                currentMap = newMap;
+            } else return null;
         }
-
-        Map<String, Object> parent = contents;
-
-
-        String part;
-        for (int i = 0; i < parts.length - 1; i++) {
-            part = parts[i];
-            if (!parent.containsKey(part)) {
-                if (!createIfAbsent) {
-                    return null; // Return null if the part doesn't exist and createIfAbsent is false
-                }
-                Map<String, Object> map = new LinkedHashMap<>();
-                parent.put(part, map); // Create a new map if the part doesn't exist
-                parent = map;
-                continue;
-            }
-
-            Object child = parent.get(part);
-            if (!(child instanceof Map)) {
-                if (!createIfAbsent) {
-                    return null; // Return null if the part doesn't exist and createIfAbsent is false
-                }
-                Map<String, Object> map = new LinkedHashMap<>();
-                parent.put(part, map); // Replace non-map value with a new map
-                parent = map;
-                continue;
-            }
-
-            //noinspection unchecked
-            parent = (Map<String, Object>) child; // Move to the next level
-        }
-
-        return parent; // Return the parent map for the last part
+        return currentMap;
     }
 
     @Override
     public Map<String, Object> getContents() {
-        if (contents == null) {
-            throw new IllegalStateException("Configuration contents are not loaded.");
-        }
-        return Collections.unmodifiableMap(contents);
+        if (this.contents == null) throw new IllegalStateException("Configuration contents are not loaded.");
+        return Collections.unmodifiableMap(this.contents);
     }
 
     @Override
     public Map<String, Object> getDefaults() {
-        if (defaults == null) {
-            return Collections.emptyMap(); // Return an empty map if no defaults are set
-        }
-        return Collections.unmodifiableMap(defaults);
+        if (this.defaults == null) return Collections.emptyMap(); // Return an empty map if no defaults are set
+        return Collections.unmodifiableMap(this.defaults);
     }
 }
